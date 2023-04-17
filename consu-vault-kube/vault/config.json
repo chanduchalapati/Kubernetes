@@ -1,0 +1,19 @@
+{
+  "listener": {
+    "tcp":{
+      "address": "127.0.0.1:8200",
+      "tls_disable": 1,
+      "tls_cert_file": "/etc/tls/vault.crt",
+      "tls_key_file": "/etc/tls/vault.key"
+    }
+  },
+  "storage": {
+    "consul": {
+      "address": "consul:8500",
+      "path": "vault/",
+      "disable_registration": "true",
+      "ha_enabled": "true"
+    }
+  },
+  "ui": true
+}

@@ -1,0 +1,11 @@
+{
+  "ca_file": "/etc/tls/ca-cert.pem",
+  "cert_file": "/etc/tls/consul.crt",
+  "key_file": "/etc/tls/consul.key",
+  "verify_incoming": true,
+  "verify_outgoing": true,
+  "verify_server_hostname": true,
+  "ports": {
+    "https": 8443
+  }
+}
