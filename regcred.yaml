@@ -1,0 +1,26 @@
+# Example pod definition file for passing credentials to pull image from private registry.
+# We need to create a secret file with all the credentials in it and proviude the name in
+# imagePullSecrets section as shown below.
+# It also provides a usecase where we can run a security context. The security context
+#  provided in container spec (under the container) overrides the pod spec 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: your-pod
+  labels:
+    tier: app-tier
+spec:
+  securityContext:
+    runasUser: michelle
+    capabilities:
+      add: ["admin"]
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    command: ["sleep", "3600"]
+    securityContext:
+      runasUser: michelle
+      capabilities:
+        add: ["admin"]
+  imagePullSecrets:
+  - name: regcred

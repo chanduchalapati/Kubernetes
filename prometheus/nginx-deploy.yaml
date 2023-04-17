@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deploy
+  labels:
+    tier: app-tier
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-service
+  template:
+    metadata:
+      name: my-pod
+      labels:
+        app: nginx-service
+    spec:
+      # volumes:
+      #   - name: my-pv-volume
+      #     persistentVolumeClaim:
+      #       claimName: my-pv-claim
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: nginx-config
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+              # name: http-web-svc
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+        - name: nginx-exporter
+          image: nginx/nginx-prometheus-exporter
+          args:
+            - '-nginx.scrape-uri=http://localhost/metrics'
+            - '-web.telemetry-path=/metrics'
+            # ["-nginx.scrape-uri", "http://localhost", "-web.telemetry-path", "/metrics"]
+          # resources:
+          #   limits:
+          #     memory: 128Mi
+          #     cpu: 500m
+          ports:
+            - containerPort: 9113
+        # - name: adapter
+        #   image: nginx/nginx-prometheus-exporter:0.8.0
+        #   args: ["-nginx.scrape-uri", "http://localhost/nginx_status"]
+        #   ports:
+        #     - containerPort: 9113
+      #
+      # tolerations:
+      #   - key: "this"
+      #     operator: "Equal"
+      #     value: "value"
+      #     effect: "NoSchedule"
+        # volumeMounts:
+        # - name: my-volume
+        #   mountPath: /opt

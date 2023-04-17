@@ -1,0 +1,60 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: your-pod
+  labels:
+    tier: app-tier
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    volumeMounts:
+    - name: my-configmap
+      mountPath: "/my-configmap"
+      readOnly: true
+  volumes:
+    name: my-configmap-volume
+    - configMap:
+      name: my-configmap
+      hostPath:
+        path: /root
+    # envFrom:
+    #   - configMapRef:
+    #       name: my-configmap
+  restartPolicy: OnFailure
+  # nodeName: kube-01
+  affinity:
+    nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: yeah
+  #           operator: NotIn
+  #           values:
+  #           - i-win
+  #           - everyone-wins
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: nope
+            operator: In
+            values:
+            - next-time
+            - next-time-everyone
+            - i-win
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 50
+        preference:
+          matchExpressions:
+          - key: yeah
+            operator: In
+            values:
+            - next-time
+            - next-time-everyone
+            - i-win
+  tolerations:
+    - key: "this"
+      operator: "Equal"
+      value: "value"
+      effect: "NoSchedule"

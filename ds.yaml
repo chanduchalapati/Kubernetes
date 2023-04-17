@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: my-ds
+  #namespace: kube-system
+  labels:
+    tier: webapp
+spec:
+  selector:
+    matchLabels:
+      tier: app-tier
+  template:
+    metadata:
+      labels:
+        tier: app-tier
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+      nodeSelector:
+        yeah: i-win
+      restartPolicy: Always
+      # nodeName: kube-01
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: tier/backend
+          effect: NoSchedule
+      #   - key: "app01"
+      #     operator: "Equal"
+      #     value: "webapp01"
+      #     effect: "NoExecute"
+      #     tolerationSeconds: 45

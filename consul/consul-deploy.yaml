@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: consul
+  namespace: default
+spec:
+  containers:
+  - image: consul:latest
+    name: consul
+    ports:
+    - containerPort: 8500
+  serviceAccountName: vault-auth

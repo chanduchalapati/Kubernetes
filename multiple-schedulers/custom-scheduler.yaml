@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-scheduler
+  labels:
+    tier: my-scheduler01
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: my-scheduler01
+  template:
+    metadata:
+      name: my-pod
+      labels:
+        tier: my-scheduler01
+    spec:
+      volumes:
+        - name: my-pv-volume
+          persistentVolumeClaim:
+            claimName: my-pv-claim
+      # volumes:
+      # - name: my-volume
+      #   hostPath:
+      #     path: /root
+      containers:
+        - name: my-scheduler
+          ports:
+            - containerPort: 80
+        - command:
+          - /usr/local/bin/kube-scheduler
+          - --config=/etc/kubernetes/my-scheduler/my-scheduler-config.yaml
+          image: gcr.io/my-gcp-project/my-kube-scheduler:1.0
+          volumeMounts:
+            - mountPath: "/root"
+              name: my-pv-volume
+      tolerations:
+        - key: "this"
+          operator: "Equal"
+          value: "value"
+          effect: "NoSchedule"
+        # volumeMounts:
+        # - name: my-volume
+        #   mountPath: /opt

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-deployment
+  labels:
+    tier: app-tier
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      tier: app-tier
+  template:
+    metadata:
+      name: my-pod
+      labels:
+        tier: app-tier
+    spec:
+      # volumes:
+      #   - name: my-pv-volume
+      #     persistentVolumeClaim:
+      #       claimName: my-pv-claim
+      # volumes:
+      # - name: my-volume
+      #   hostPath:
+      #     path: /root
+      containers:
+        - name: mongodb
+          image: mongo
+          ports:
+            - containerPort: 27017
+          env:
+          - name: MONGO_INITDB_ROOT_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: mongo-root-username
+          - name: MONGO_INITDB_ROOT_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: mongo-root-password
+              # name: http-web-svc
+          # volumeMounts:
+          #   - mountPath: "/root"
+          #     name: my-pv-volume
+      tolerations:
+        - key: "this"
+          operator: "Equal"
+          value: "value"
+          effect: "NoSchedule"
+        # volumeMounts:
+        # - name: my-volume
+        #   mountPath: /opt

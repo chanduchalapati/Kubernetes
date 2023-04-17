@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-np-service
+  labels:
+    app: my-np-service
+spec:
+  type: LoadBalancer
+  selector:
+    tier: app-tier
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 80
+      nodePort: 30000
